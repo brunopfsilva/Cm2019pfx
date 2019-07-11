@@ -1,11 +1,17 @@
 package com.example.cm2019pf;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
+import com.example.cm2019pf.helpers.Common;
+import com.example.cm2019pf.view.hospitalDetalheActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -13,6 +19,8 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -130,7 +138,24 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutManager(gridLayoutManager);
 
         hospitalAdapter = new HospitalAdapter(this,hospitalResultList);
-        recyclerView.setAdapter(hospitalAdapter);
+
+
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Common.REQUEST_LOCATION);
+            }
+            else
+            {
+                recyclerView.setAdapter(hospitalAdapter);
+
+            }
+        }
+        else
+        {
+                recyclerView.setAdapter(hospitalAdapter);
+
+        }
 
 
          }

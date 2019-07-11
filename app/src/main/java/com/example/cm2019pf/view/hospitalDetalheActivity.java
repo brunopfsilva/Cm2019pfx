@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.example.cm2019pf.helpers.Common;
 import com.example.cm2019pf.model.statusHospital;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
@@ -298,17 +299,19 @@ public class hospitalDetalheActivity extends AppCompatActivity {
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(hospitalDetalheActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(hospitalDetalheActivity.this, new String[]{Manifest.permission.CALL_PHONE},1);
+                ActivityCompat.requestPermissions(hospitalDetalheActivity.this, new String[]{Manifest.permission.CALL_PHONE}, Common.REQUEST_CALL);
             }
             else
             {
                 callIntent.setData(Uri.parse("tel:"+telefone.getText().toString()));
-                startActivity(callIntent);            }
+                startActivity(callIntent);
+            }
         }
         else
         {
             callIntent.setData(Uri.parse("tel:"+telefone.getText().toString()));
-            startActivity(callIntent);        }
+            startActivity(callIntent);
+        }
 
 
 
