@@ -3,7 +3,9 @@ package com.example.cm2019pf;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
@@ -35,6 +38,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,7 +62,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener   {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
 
     private RecyclerView recyclerView;
@@ -70,11 +76,13 @@ public class MainActivity extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
 
 
-
-
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
     LocationCallback locationCallback;
+
+    //Salva localizacao temporaria para enviar ao adaptador
+    SharedPreferences putlocation ;
+
 
 
     @Override
@@ -82,7 +90,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
-
 
 
         //realm configuration
@@ -95,8 +102,6 @@ public class MainActivity extends AppCompatActivity
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
         //location api configuration
-
-
 
 
         setSupportActionBar(toolbar);
@@ -117,14 +122,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-
-
-
-
-
-            //Carrega as views da MainActivity
-
-
+        //Carrega as views da MainActivity
 
 
     }
@@ -137,65 +135,74 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void initiViews(){
+    private void initiViews() {
 
 
         //pega localizacao actual
 
 
-        recyclerView = (RecyclerView)findViewById(R.id.rcsgetHospital);
+        recyclerView = (RecyclerView) findViewById(R.id.rcsgetHospital);
         //lista onde vao ser adicionados os objectos
         hospitalResultList = new ArrayList<Hospital>();
 
 
-
-
         //seta o layout do recyclerview
-        gridLayoutManager = new GridLayoutManager(this,1);
+        gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
 
         recyclerView.setAdapter(hospitalAdapter);
 
 
-        hospitalAdapter = new HospitalAdapter(this,hospitalResultList);
-
+        hospitalAdapter = new HospitalAdapter(this, hospitalResultList);
 
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Common.REQUEST_LOCATION);
+            } else {
+                //    requisitarPosicao();
+                callConection();
             }
-            else
-            {
-                requisitarPosicao();
-            }
-        }
-        else
-        {
-            requisitarPosicao();
+        } else {
+            //        requisitarPosicao();
         }
 
-        requisitarPosicao();
+        //   requisitarPosicao();
 
-         }
+    }
+
+    private synchronized void callConection() {
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addOnConnectionFailedListener(this)
+                .addConnectionCallbacks(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+
+
+    }
 
     private void retornoPosicao() {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
 
 
-        locationCallback = new LocationCallback(){
+        locationCallback = new LocationCallback() {
 
 
+            @SuppressLint("CommitPrefEdits")
             @Override
             public void onLocationResult(LocationResult locationResult) {
 
-                for(final Location location: locationResult.getLocations()){
+                for (final Location location : locationResult.getLocations()) {
 
 
+                    Log.i("Localizacao", " Latitude "
+                            + location.getLatitude() + " Longitude " + location.getLongitude());
 
-                            Log.i("Localizacao"," Latitude "
-                                    +location.getLatitude() + " Longitude " +location.getLongitude());
+                    putlocation = getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
+
 
 
                 }
@@ -226,30 +233,28 @@ public class MainActivity extends AppCompatActivity
         dialog.setCancelable(false);
         dialog.show();
 
-        @SuppressLint("StaticFieldLeak") AsyncTask<Void,Void,Void> task = new AsyncTask<Void, Void, Void>() {
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
 
 
-
                 IHospitalApi hospitalApi = getdataApiController.getRetrofitInstance().create(IHospitalApi.class);
-                Call<HospitalResult> requesthospitals =  hospitalApi.listHospitais();
+                Call<HospitalResult> requesthospitals = hospitalApi.listHospitais();
 
                 requesthospitals.enqueue(new Callback<HospitalResult>() {
                     @Override
                     public void onResponse(Call<HospitalResult> call, Response<HospitalResult> response) {
-                        if (dialog.isShowing()){
+                        if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        if(!response.isSuccessful()){
-                            Log.e("erro",""+response.code());
-                        }else{
+                        if (!response.isSuccessful()) {
+                            Log.e("erro", "" + response.code());
+                        } else {
                             //pega a lista de hospital vindo da url
                             HospitalResult hospitals = response.body();
-                            try{
-                                for(Hospital h: hospitals.getResult()){
-                                    Log.i("Hospital "+" Nome "+h.getName(),"Distro "+h.getDistrict());
-
+                            try {
+                                for (Hospital h : hospitals.getResult()) {
+                                    Log.i("Hospital " + " Nome " + h.getName(), "Distro " + h.getDistrict());
 
 
                                     Hospital hospitaldatamodel = new Hospital(
@@ -272,7 +277,6 @@ public class MainActivity extends AppCompatActivity
                                             h.getPilot()
 
 
-
                                     );
                                     //adiciona hospitais no array
                                     hospitalResultList.add(hospitaldatamodel);
@@ -280,8 +284,7 @@ public class MainActivity extends AppCompatActivity
                                 }
 
 
-
-                            }catch (Exception ex){
+                            } catch (Exception ex) {
 
                             }
                         }
@@ -289,7 +292,7 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public void onFailure(Call<HospitalResult> call, Throwable t) {
-                        if (dialog.isShowing()){
+                        if (dialog.isShowing()) {
                             dialog.dismiss();
                             Toast.makeText(MainActivity.this, "Error ao carregar os dados", Toast.LENGTH_SHORT).show();
                         }
@@ -376,10 +379,33 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    //pega a localizaco
+    private void getlocation(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    Activity#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for Activity#requestPermissions for more details.
+                return;
+            }
+        }
+        Location l = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (l !=null){
 
+            Log.i("Localizacao", " Latitude "
+                    + l.getLatitude() + " Longitude " + l.getLongitude());
+        }
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+
+        getlocation();
+
 
     }
 
@@ -391,5 +417,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        getlocation();
     }
 }
