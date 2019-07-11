@@ -1,16 +1,22 @@
 package com.example.cm2019pf.view;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.example.cm2019pf.model.statusHospital;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -86,19 +92,26 @@ public class hospitalDetalheActivity extends AppCompatActivity {
 
             this.setTitle(getdescricao);
 
-            fbsendmail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    sendEmail(v);
-                }
-            });
+
 
         }
 
+
+        //enviar email
+        fbsendmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendEmail(v);
+            }
+        });
+
+        //abrir site
             fbopensite.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    openSite(v);
+                public void onClick(final View v) {
+
+                            openSite(v);
+
                 }
             });
 
@@ -120,18 +133,18 @@ public class hospitalDetalheActivity extends AppCompatActivity {
 
 
 
+
+
     }
 
     public void openSite(View view) {
 
-        webView = new WebView(this);
 
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        String url = site.getText().toString();
-        webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(url);
+
+                Uri uri = Uri.parse(site.getText().toString()); // missing 'http://' will cause crashed
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent.createChooser(intent,"Escolha a melhor forma"));
+
 
     }
 
@@ -157,7 +170,7 @@ public class hospitalDetalheActivity extends AppCompatActivity {
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
 
                 try {
-                    startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                    startActivity(emailIntent);
                    // finish();
                     Log.i("Finished sending email", "");
                 } catch (android.content.ActivityNotFoundException ex) {
@@ -276,5 +289,28 @@ public class hospitalDetalheActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        finish();
+    }
+
+    public void callNumber(View view) {
+
+        Intent callIntent =new Intent(Intent.ACTION_CALL);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(hospitalDetalheActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(hospitalDetalheActivity.this, new String[]{Manifest.permission.CALL_PHONE},1);
+            }
+            else
+            {
+                callIntent.setData(Uri.parse("tel:"+telefone.getText().toString()));
+                startActivity(callIntent);            }
+        }
+        else
+        {
+            callIntent.setData(Uri.parse("tel:"+telefone.getText().toString()));
+            startActivity(callIntent);        }
+
+
+
     }
 }

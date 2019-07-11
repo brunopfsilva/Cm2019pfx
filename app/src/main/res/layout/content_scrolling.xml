@@ -8,6 +8,11 @@
     tools:context=".view.hospitalDetalheActivity"
     tools:showIn="@layout/activity_scrolling">
 
+
+
+
+
+
     <EditText
         android:id="@+id/hospitalDescricao"
         android:layout_width="343dp"
@@ -64,6 +69,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fCallNumber"
+        android:onClick="callNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/fopenSite"
