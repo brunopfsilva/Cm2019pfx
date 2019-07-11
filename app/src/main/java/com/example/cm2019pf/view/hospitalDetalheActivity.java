@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import com.example.cm2019pf.helpers.Common;
 import com.example.cm2019pf.model.statusHospital;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;

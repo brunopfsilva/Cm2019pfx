@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.cm2019pf.R;
 import com.example.cm2019pf.model.Hospital;
 import com.example.cm2019pf.view.hospitalDetalheActivity;
+import com.google.android.gms.location.FusedLocationProviderClient;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
 
      Context context;
      List<Hospital> hospitalList;
+
+
 
 
     public HospitalAdapter(Context context, List<Hospital> hospitalList) {

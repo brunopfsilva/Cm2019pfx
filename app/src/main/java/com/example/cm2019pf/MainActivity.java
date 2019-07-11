@@ -14,6 +14,9 @@ import com.example.cm2019pf.helpers.Common;
 import com.example.cm2019pf.view.hospitalDetalheActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -62,6 +65,12 @@ public class MainActivity extends AppCompatActivity
     //chamada google api cliente
     private GoogleApiClient mGoogleApiClient;
 
+
+
+
+    FusedLocationProviderClient fusedLocationProviderClient;
+    LocationRequest locationRequest;
+    LocationCallback locationCallback;
 
 
     @Override
@@ -126,6 +135,9 @@ public class MainActivity extends AppCompatActivity
     private void initiViews(){
 
 
+        //pega localizacao actual
+
+
         recyclerView = (RecyclerView)findViewById(R.id.rcsgetHospital);
         //lista onde vao ser adicionados os objectos
         hospitalResultList = new ArrayList<Hospital>();
@@ -137,6 +149,9 @@ public class MainActivity extends AppCompatActivity
         gridLayoutManager = new GridLayoutManager(this,1);
         recyclerView.setLayoutManager(gridLayoutManager);
 
+        recyclerView.setAdapter(hospitalAdapter);
+
+
         hospitalAdapter = new HospitalAdapter(this,hospitalResultList);
 
 
@@ -147,18 +162,33 @@ public class MainActivity extends AppCompatActivity
             }
             else
             {
-                recyclerView.setAdapter(hospitalAdapter);
-
+                requisitarPosicao();
+                retornoPosicao();
             }
         }
         else
         {
-                recyclerView.setAdapter(hospitalAdapter);
-
+            requisitarPosicao();
+            retornoPosicao();
         }
 
 
          }
+
+    private void retornoPosicao() {
+    }
+
+    private void requisitarPosicao() {
+
+        locationRequest = new LocationRequest();
+        //posicao com alto acerto
+        locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
+        // intervalo de tempo
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setSmallestDisplacement(10);
+
+    }
 
 
     public void get_data_from_server() {
