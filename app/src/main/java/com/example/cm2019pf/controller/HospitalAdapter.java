@@ -90,6 +90,7 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
         public TextView textViewnome;
         public TextView textViewdescricao;
         public TextView textViewdistro;
+        public TextView txtproximidade;
 
 
 
@@ -101,7 +102,7 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
             textViewnome = (TextView)itemView.findViewById(R.id.tztnomeHosp);
             textViewdescricao = (TextView)itemView.findViewById(R.id.txtdescription);
             textViewdistro = (TextView)itemView.findViewById(R.id.txtDistrict);
-
+            txtproximidade = (TextView)itemView.findViewById(R.id.txtproximidade);
 
     }
 
