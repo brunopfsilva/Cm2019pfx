@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -15,8 +16,11 @@ import com.example.cm2019pf.view.hospitalDetalheActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -130,6 +134,7 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
         initiViews();
         get_data_from_server();
+
     }
 
     private void initiViews(){
@@ -163,19 +168,41 @@ public class MainActivity extends AppCompatActivity
             else
             {
                 requisitarPosicao();
-                retornoPosicao();
             }
         }
         else
         {
             requisitarPosicao();
-            retornoPosicao();
         }
 
+        requisitarPosicao();
 
          }
 
     private void retornoPosicao() {
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+
+
+        locationCallback = new LocationCallback(){
+
+
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+
+                for(final Location location: locationResult.getLocations()){
+
+
+
+                            Log.i("Localizacao"," Latitude "
+                                    +location.getLatitude() + " Longitude " +location.getLongitude());
+
+
+                }
+
+            }
+        };
+
     }
 
     private void requisitarPosicao() {
@@ -187,7 +214,7 @@ public class MainActivity extends AppCompatActivity
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(3000);
         locationRequest.setSmallestDisplacement(10);
-
+        retornoPosicao();
     }
 
 
@@ -313,6 +340,11 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_refresh) {
+            get_data_from_server();
             return true;
         }
 
