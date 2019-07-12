@@ -10,20 +10,19 @@ import com.google.maps.android.SphericalUtil;
 
 public class Calcular_proximidade {
 
-    MainActivity mainActivity;
-    SharedPreferences getlocation = null;
 
-    public Double Calcular_proximidade( Double latitudeFin, Double longitudeFin  ) {
+    public Double Calcular_proximidade(Context context, Double latitudeFin, Double longitudeFin  ) {
 
 
         Double distance = null;
 
-        getlocation = mainActivity.getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
+        SharedPreferences getlocation = context.getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
 
         if (getlocation != null){
 
         //latitude inicial do dispositivo
-        LatLng posicaoInicial = new LatLng(Double.valueOf(getlocation.getString("Latitude","Latitude")),Double.valueOf(getlocation.getString("Longitude","Longitude")));
+        LatLng posicaoInicial = new LatLng(getlocation.getFloat("Latitude",0),getlocation.getFloat("Longitude",0));
+        //LatLng posicaoInicial = new LatLng(latitudeIni,LongitudeIni);
         //latitude final  do hospital
         LatLng posicaiFinal = new LatLng(latitudeFin,longitudeFin);
 
