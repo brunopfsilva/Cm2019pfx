@@ -23,7 +23,7 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
 
      Context context;
      List<Hospital> hospitalList;
-
+     Double km;
 
 
 
@@ -55,11 +55,13 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
         viewHolder.textViewdescricao.setText("Descricao: "+ hospitalList.get(position).getDescription());
         viewHolder.textViewdistro.setText("Distro: "+ hospitalList.get(position).getDistrict());
 
-        Double km = new Calcular_proximidade().Calcular_proximidade(Double.valueOf(hospitalList.get(position).getLatitude()),
-                Double.valueOf(hospitalList.get(position).getLongitude()));
 
-        viewHolder.txtproximidade.setText(String.valueOf(km));
 
+        if(km !=null) {
+            km = new Calcular_proximidade().Calcular_proximidade(Double.valueOf(Double.valueOf(hospitalList.get(position).getLatitude())),
+                    Double.valueOf(Double.valueOf(hospitalList.get(position).getLongitude())));
+            viewHolder.txtproximidade.setText(String.valueOf(km));
+        }
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

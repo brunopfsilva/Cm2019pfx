@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.example.cm2019pf.helpers.Calcular_proximidade;
 import com.example.cm2019pf.helpers.Common;
 import com.example.cm2019pf.view.hospitalDetalheActivity;
 import com.google.android.gms.common.ConnectionResult;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity
 
     //Salva localizacao temporaria para enviar ao adaptador
     SharedPreferences putlocation ;
+    SharedPreferences.Editor editor;
 
 
 
@@ -203,11 +205,15 @@ public class MainActivity extends AppCompatActivity
 
                     putlocation = getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
 
-                    SharedPreferences.Editor editor = putlocation.edit();
+                    editor = putlocation.edit();
 
-                    editor.putString("Latitude",String.valueOf(location.getLatitude()));
-                    editor.putString("Longitude",String.valueOf(location.getLongitude()));
+                    String Longitude = String.valueOf(location.getLongitude());
+                    String Latitude = String.valueOf(location.getLatitude());
+
+                    editor.putString("Latitude",Latitude);
+                    editor.putString("Longitude",Longitude);
                     editor.apply();
+                    editor.commit();
 
 
                 }
@@ -262,6 +268,7 @@ public class MainActivity extends AppCompatActivity
                                     Log.i("Hospital " + " Nome " + h.getName(), "Distro " + h.getDistrict());
 
 
+
                                     Hospital hospitaldatamodel = new Hospital(
 
                                             h.getId(),
@@ -280,7 +287,6 @@ public class MainActivity extends AppCompatActivity
                                             h.getHasEmergency(),
                                             h.getInstitutionURL(),
                                             h.getPilot()
-
 
                                     );
                                     //adiciona hospitais no array
