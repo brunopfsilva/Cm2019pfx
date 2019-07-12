@@ -45,7 +45,6 @@ public class hospitalDetalheActivity extends AppCompatActivity {
 
 
     EditText nome,email,telefone,descricao,site;
-    WebView webView;
     FloatingActionButton fbsendmail,fbopensite;
     String id;
     ProgressDialog dialog;

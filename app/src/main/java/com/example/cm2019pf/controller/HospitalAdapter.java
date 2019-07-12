@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.cm2019pf.R;
+import com.example.cm2019pf.helpers.Calcular_proximidade;
 import com.example.cm2019pf.model.Hospital;
 import com.example.cm2019pf.view.hospitalDetalheActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -54,6 +55,10 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
         viewHolder.textViewdescricao.setText("Descricao: "+ hospitalList.get(position).getDescription());
         viewHolder.textViewdistro.setText("Distro: "+ hospitalList.get(position).getDistrict());
 
+        Double km = new Calcular_proximidade().Calcular_proximidade(Double.valueOf(hospitalList.get(position).getLatitude()),
+                Double.valueOf(hospitalList.get(position).getLongitude()));
+
+        viewHolder.txtproximidade.setText(String.valueOf(km));
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

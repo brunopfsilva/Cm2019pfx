@@ -203,6 +203,11 @@ public class MainActivity extends AppCompatActivity
 
                     putlocation = getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
 
+                    SharedPreferences.Editor editor = putlocation.edit();
+
+                    editor.putString("Latitude",String.valueOf(location.getLatitude()));
+                    editor.putString("Longitude",String.valueOf(location.getLongitude()));
+                    editor.apply();
 
 
                 }
