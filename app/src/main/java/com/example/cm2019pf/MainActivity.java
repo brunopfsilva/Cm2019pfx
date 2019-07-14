@@ -8,18 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.cm2019pf.helpers.Calcular_proximidade;
 import com.example.cm2019pf.helpers.Common;
-import com.example.cm2019pf.view.hospitalDetalheActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -373,8 +369,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_perfil) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+            Toast.makeText(this, " meu perfil ", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_nearby_maps) {
+            Toast.makeText(this, " hospitais profimos de mim ", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_slideshow) {
 
