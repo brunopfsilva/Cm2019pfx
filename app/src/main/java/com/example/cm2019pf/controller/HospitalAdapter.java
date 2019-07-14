@@ -59,7 +59,7 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
 
         if(km !=null) {
 
-            viewHolder.txtproximidade.setText("Km: "+ String.valueOf(km));
+            viewHolder.txtproximidade.setText(String.valueOf(km));
         }
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

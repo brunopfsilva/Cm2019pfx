@@ -229,6 +229,7 @@ public class MainActivity extends AppCompatActivity
         //posicao com alto acerto
         locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
         // intervalo de tempo
+
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(3000);
         locationRequest.setSmallestDisplacement(10);
@@ -371,7 +372,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
+        if (id == R.id.nav_perfil) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
