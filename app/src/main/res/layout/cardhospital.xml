@@ -49,6 +49,8 @@
                 android:textAlignment="center" />
 
 
+
+
             <TextView
                 android:textColor="@color/md_dialog_black_light"
                 android:id="@+id/txtDistrict"
@@ -66,9 +68,21 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtDistrict"
                 android:layout_marginTop="8dp"
+                android:textAlignment="textEnd"
                 android:text="Kilometros: "
                  />
 
+
+            <TextView
+                android:textColor="@color/md_dialog_black_light"
+                android:id="@+id/txtpx"
+                android:textAlignment="textStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtDistrict"
+                android:layout_marginTop="8dp"
+                android:text="Distancia em km: "
+                />
 
         </RelativeLayout>
 

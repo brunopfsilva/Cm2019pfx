@@ -371,9 +371,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_perfil) {
             Toast.makeText(this, " meu perfil ", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_nearby_maps) {
-            Toast.makeText(this, " hospitais profimos de mim ", Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_slideshow) {
+            startActivity(new Intent(this, mapsHospitalsActivity.class));
+
+        } else if (id == R.id.nav_history) {
 
         } else if (id == R.id.nav_tools) {
 
