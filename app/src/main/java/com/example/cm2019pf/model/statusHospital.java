@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class statusHospital {
 
+
+
     @SerializedName("ScaleType")
     @Expose
     private String ScaleType;
@@ -12,6 +14,15 @@ public class statusHospital {
     @Expose
     private String LastUpdate;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private int id;
 
     public String getScaleType() {
         return ScaleType;
@@ -29,8 +40,9 @@ public class statusHospital {
         LastUpdate = lastUpdate;
     }
 
-    public statusHospital(String scaleType, String lastUpdate) {
+    public statusHospital(String scaleType, String lastUpdate,int id) {
         ScaleType = scaleType;
         LastUpdate = lastUpdate;
+        id = id;
     }
 }

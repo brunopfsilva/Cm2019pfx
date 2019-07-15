@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.example.cm2019pf.helpers.Common;
+import com.example.cm2019pf.model.Hospital;
 import com.example.cm2019pf.model.statusHospital;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,7 +52,7 @@ public class hospitalDetalheActivity extends AppCompatActivity {
 
 
     //listview status
-    List<statusHospital> hospitalResultList;
+    ArrayList<statusHospital> hospitalResultList;
     hospitalgetTimeandTypeAdapter hospitalAdapter;
     ListView lstStatus;
 
@@ -129,9 +130,7 @@ public class hospitalDetalheActivity extends AppCompatActivity {
         lstStatus = (ListView)findViewById(R.id.lststatushospital);
 
 
-        hospitalResultList = new ArrayList<statusHospital>();
-        hospitalAdapter = new hospitalgetTimeandTypeAdapter(this,hospitalResultList);
-
+        hospitalResultList = new ArrayList<>();
 
 
 
@@ -236,18 +235,37 @@ public class hospitalDetalheActivity extends AppCompatActivity {
                     call.enqueue(new Callback<statusHospital>() {
                         @Override
                         public void onResponse(Call<statusHospital> call, Response<statusHospital> response) {
-                            try{
-                                statusHospital sts = call.execute().body();
-                                Toast.makeText(hospitalDetalheActivity.this, " "+sts.getLastUpdate(), Toast.LENGTH_SHORT).show();
-                                onBackPressed();
-                            }catch (Exception e){
+
+                            if (dialog.isShowing()) {
+                                dialog.dismiss();
+
+                                try{
+
+                                    statusHospital sts = response.body();
+
+
+                                    statusHospital status = new statusHospital(sts.getScaleType(),sts.getLastUpdate(),1);
+
+                                    hospitalResultList.add(status);
+                                    hospitalAdapter = new hospitalgetTimeandTypeAdapter(getBaseContext(),hospitalResultList);
+
+                                    lstStatus.setAdapter(hospitalAdapter);
+
+                                }catch (Exception e){
+
+                                }
 
                             }
+
+
                         }
 
                         @Override
                         public void onFailure(Call<statusHospital> call, Throwable t) {
-
+                            if (dialog.isShowing()) {
+                                dialog.dismiss();
+                                Toast.makeText(hospitalDetalheActivity.this, " "+t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
@@ -264,7 +282,10 @@ public class hospitalDetalheActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                hospitalAdapter.notifyDataSetChanged();
+//                hospitalAdapter.notifyDataSetChanged();
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
             }
         };
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.cm2019pf.R;
@@ -14,19 +15,31 @@ import com.example.cm2019pf.model.statusHospital;
 
 import java.util.List;
 
-public class hospitalgetTimeandTypeAdapter extends ArrayAdapter<statusHospital> {
+public class hospitalgetTimeandTypeAdapter extends BaseAdapter {
 
     private final Context context;
     private final List<statusHospital>elementosStatus;
 
 
-    public hospitalgetTimeandTypeAdapter(Context context, List<statusHospital> elementosStatus){
-        super(context, R.layout.hospitaltimesandtype,elementosStatus);
+    public hospitalgetTimeandTypeAdapter(Context context, List<statusHospital> elementosStatus) {
         this.context = context;
-        this.elementosStatus =  elementosStatus;
+        this.elementosStatus = elementosStatus;
     }
 
+    @Override
+    public int getCount() {
+        return elementosStatus.size();
+    }
 
+    @Override
+    public Object getItem(int id) {
+        return elementosStatus.get(id);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return elementosStatus.get(position).getId();
+    }
 
     @Override
     public View getView(int position,  View convertView, ViewGroup parent) {

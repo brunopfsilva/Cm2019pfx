@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity
 
         hospitalAdapter = new HospitalAdapter(this, hospitalResultList);
 
+        hospitalAdapter.notifyDataSetChanged();
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -254,6 +255,7 @@ public class MainActivity extends AppCompatActivity
                     public void onResponse(Call<HospitalResult> call, Response<HospitalResult> response) {
                         if (dialog.isShowing()) {
                             dialog.dismiss();
+                            hospitalAdapter.notifyDataSetChanged();
                         }
                         if (!response.isSuccessful()) {
                             Log.e("erro", "" + response.code());
@@ -288,8 +290,9 @@ public class MainActivity extends AppCompatActivity
                                     );
                                     //adiciona hospitais no array
                                     hospitalResultList.add(hospitaldatamodel);
-                                    hospitalAdapter.notifyDataSetChanged();
                                 }
+
+                                hospitalAdapter.notifyDataSetChanged();
 
 
                             } catch (Exception ex) {
@@ -303,6 +306,8 @@ public class MainActivity extends AppCompatActivity
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                             Toast.makeText(MainActivity.this, "Error ao carregar os dados", Toast.LENGTH_SHORT).show();
+                            hospitalAdapter.notifyDataSetChanged();
+
                         }
 
                     }
