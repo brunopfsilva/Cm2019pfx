@@ -13,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.example.cm2019pf.helpers.Common;
+import com.example.cm2019pf.view.historicoActivity;
+import com.example.cm2019pf.view.tipoUrgenciaActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -378,8 +380,10 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_history) {
 
-        }  else if (id == R.id.nav_share) {
+            startActivity(new Intent(this, historicoActivity.class));
 
+        }  else if (id == R.id.nav_share) {
+            startActivity(new Intent(this, tipoUrgenciaActivity.class));
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
