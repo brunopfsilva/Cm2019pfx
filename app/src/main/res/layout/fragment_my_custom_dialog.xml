@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="16dp"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:id="@+id/checkBoxg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Grave" />
+    <CheckBox
+        android:id="@+id/checkBoxng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Não grave" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
+
+
+</LinearLayout>
