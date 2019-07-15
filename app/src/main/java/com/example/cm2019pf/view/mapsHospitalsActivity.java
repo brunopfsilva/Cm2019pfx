@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -22,7 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class mapsHospitalsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class mapsHospitalsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
     SharedPreferences getlocation ;
@@ -60,10 +61,11 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
 
         // Add a marker in Sydney and move the camera
 
-        String longitude = getlocation.getString("Longitude","Longitude");
-        String latitude = getlocation.getString("Latitude","Latitude");
+        Long longitude = getlocation.getLong("Longitude",0);
+        Long latitude = getlocation.getLong("Latitude",0);
 
-        LatLng sydney = new LatLng(Double.valueOf(longitude),Double.valueOf(latitude));
+
+        LatLng sydney = new LatLng(Long.valueOf(longitude),Long.valueOf(latitude));
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
@@ -111,4 +113,23 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
 
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
 }
