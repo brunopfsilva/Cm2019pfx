@@ -13,15 +13,16 @@ import com.example.cm2019pf.R;
 import com.example.cm2019pf.model.hospitalTimes;
 import com.example.cm2019pf.model.statusHospital;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class hospitalgetTimeandTypeAdapter extends BaseAdapter {
 
     private final Context context;
-    private final List<statusHospital>elementosStatus;
+    private final ArrayList<statusHospital>elementosStatus;
 
 
-    public hospitalgetTimeandTypeAdapter(Context context, List<statusHospital> elementosStatus) {
+    public hospitalgetTimeandTypeAdapter(Context context, ArrayList<statusHospital> elementosStatus) {
         this.context = context;
         this.elementosStatus = elementosStatus;
     }
@@ -38,7 +39,7 @@ public class hospitalgetTimeandTypeAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return elementosStatus.get(position).getId();
+        return position;
     }
 
     @Override

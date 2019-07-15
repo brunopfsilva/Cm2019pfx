@@ -8,6 +8,8 @@
         android:id="@+id/lststatushospital"
         android:layout_width="match_parent"
         android:layout_height="500dp"
+        android:padding="8dp"
+        android:layout_margin="8dp"
         android:background="@color/cardview_shadow_start_color"
         android:paddingTop="80dp" />
 

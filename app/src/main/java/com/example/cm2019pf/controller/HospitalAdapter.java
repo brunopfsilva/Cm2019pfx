@@ -39,6 +39,7 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
         View itemview = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cardhospital,viewGroup,false);
 
 
+        itemview.refreshDrawableState();
         return new ViewHolder(itemview);
 
 
@@ -58,7 +59,6 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.ViewHo
                 Double.valueOf(Double.valueOf(hospitalList.get(position).getLongitude())));
 
         if(km !=null) {
-
             viewHolder.txtproximidade.setText(String.valueOf(km));
         }
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

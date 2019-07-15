@@ -45,7 +45,7 @@ import retrofit2.Response;
 public class hospitalDetalheActivity extends AppCompatActivity {
 
 
-    EditText nome,email,telefone,descricao,site;
+    EditText email,telefone,descricao,site;
     FloatingActionButton fbsendmail,fbopensite;
     String id;
     ProgressDialog dialog;
@@ -55,6 +55,7 @@ public class hospitalDetalheActivity extends AppCompatActivity {
     ArrayList<statusHospital> hospitalResultList;
     hospitalgetTimeandTypeAdapter hospitalAdapter;
     ListView lstStatus;
+    IHospitalApi hospitalApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +191,7 @@ public class hospitalDetalheActivity extends AppCompatActivity {
                 .setTitle("Status Hospital")
                 .setContentView(R.layout.hospitaltimesandtype)
                 .setWidthMaxDp(300)
-                .setContentItemHeightDp(400)
+                .setContentItemHeightDp(200)
                 .setPositiveButton("Positivo", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -225,7 +226,7 @@ public class hospitalDetalheActivity extends AppCompatActivity {
 
 
 
-                IHospitalApi hospitalApi =  getdataApiController.getRetrofitInstance().create(IHospitalApi.class);
+                hospitalApi =  getdataApiController.getRetrofitInstance().create(IHospitalApi.class);
 
                 if (id!=null) {
 
@@ -244,7 +245,7 @@ public class hospitalDetalheActivity extends AppCompatActivity {
                                     statusHospital sts = response.body();
 
 
-                                    statusHospital status = new statusHospital(sts.getScaleType(),sts.getLastUpdate(),1);
+                                    statusHospital status = new statusHospital(sts.getScaleType(),sts.getLastUpdate());
 
                                     hospitalResultList.add(status);
                                     hospitalAdapter = new hospitalgetTimeandTypeAdapter(getBaseContext(),hospitalResultList);
@@ -282,10 +283,18 @@ public class hospitalDetalheActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-//                hospitalAdapter.notifyDataSetChanged();
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+
+                        }
+                    }
+                });
+
+
             }
         };
 

@@ -119,18 +119,17 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        initiViews();
 
         //Carrega as views da MainActivity
-
+        get_data_from_server();
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        initiViews();
-        get_data_from_server();
-
+        hospitalAdapter.notifyDataSetChanged();
     }
 
     private void initiViews() {
@@ -148,12 +147,9 @@ public class MainActivity extends AppCompatActivity
         gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
 
+        hospitalAdapter = new HospitalAdapter(this, hospitalResultList);
         recyclerView.setAdapter(hospitalAdapter);
 
-
-        hospitalAdapter = new HospitalAdapter(this, hospitalResultList);
-
-        hospitalAdapter.notifyDataSetChanged();
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -255,7 +251,6 @@ public class MainActivity extends AppCompatActivity
                     public void onResponse(Call<HospitalResult> call, Response<HospitalResult> response) {
                         if (dialog.isShowing()) {
                             dialog.dismiss();
-                            hospitalAdapter.notifyDataSetChanged();
                         }
                         if (!response.isSuccessful()) {
                             Log.e("erro", "" + response.code());
@@ -290,6 +285,7 @@ public class MainActivity extends AppCompatActivity
                                     );
                                     //adiciona hospitais no array
                                     hospitalResultList.add(hospitaldatamodel);
+
                                 }
 
                                 hospitalAdapter.notifyDataSetChanged();
@@ -306,7 +302,6 @@ public class MainActivity extends AppCompatActivity
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                             Toast.makeText(MainActivity.this, "Error ao carregar os dados", Toast.LENGTH_SHORT).show();
-                            hospitalAdapter.notifyDataSetChanged();
 
                         }
 
@@ -322,6 +317,7 @@ public class MainActivity extends AppCompatActivity
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 hospitalAdapter.notifyDataSetChanged();
+
             }
         };
 
@@ -356,11 +352,12 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            finish();
             return true;
         }
 
         if (id == R.id.action_refresh) {
-            get_data_from_server();
+            hospitalAdapter.notifyDataSetChanged();
             return true;
         }
 
