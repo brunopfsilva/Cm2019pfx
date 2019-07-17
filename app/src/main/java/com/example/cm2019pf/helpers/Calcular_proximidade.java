@@ -8,6 +8,8 @@ import com.example.cm2019pf.MainActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
+import static java.lang.Double.valueOf;
+
 public class Calcular_proximidade {
 
 
@@ -21,7 +23,8 @@ public class Calcular_proximidade {
         if (getlocation != null){
 
         //latitude inicial do dispositivo
-        LatLng posicaoInicial = new LatLng(getlocation.getLong("Latitude",0),getlocation.getLong("Longitude",0));
+
+        LatLng posicaoInicial = new LatLng(Double.valueOf((getlocation.getString("Latitude","Latitude"))),Double.valueOf(getlocation.getString("Longitude","Latitude")));
         //LatLng posicaoInicial = new LatLng(latitudeIni,LongitudeIni);
         //latitude final  do hospital
         LatLng posicaiFinal = new LatLng(latitudeFin,longitudeFin);

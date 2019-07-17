@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity
         //Carrega as views da MainActivity
         get_data_from_server();
 
+
     }
 
     @Override
@@ -157,14 +158,13 @@ public class MainActivity extends AppCompatActivity
             if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Common.REQUEST_LOCATION);
             } else {
-                //    requisitarPosicao();
-               // callConection();
+                callConection();
             }
         } else {
-            //        requisitarPosicao();
+            callConection();
         }
 
-        //   requisitarPosicao();
+        callConection();
 
     }
 
@@ -177,12 +177,14 @@ public class MainActivity extends AppCompatActivity
                 .build();
         mGoogleApiClient.connect();
 
-
     }
 
     private void retornoPosicao() {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+
+        try{
+
 
 
         locationCallback = new LocationCallback() {
@@ -215,6 +217,11 @@ public class MainActivity extends AppCompatActivity
 
             }
         };
+
+        }catch (Exception e){
+            Toast.makeText(this, " "+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
@@ -404,33 +411,42 @@ public class MainActivity extends AppCompatActivity
                 return;
             }
         }
-        Location l = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (l !=null){
-
-            Log.i("Localizacao", " Latitude "
-                    + l.getLatitude() + " Longitude " + l.getLongitude());
 
 
-            putlocation = getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
+        try{
+            Location l = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (l !=null){
 
-            editor = putlocation.edit();
+                Log.i("Localizacao", " Latitude "
+                        + l.getLatitude() + " Longitude " + l.getLongitude());
 
-            String Longitude = String.valueOf(l.getLongitude());
-            String Latitude = String.valueOf(l.getLatitude());
 
-            editor.putLong("Latitude",Long.valueOf(Latitude));
-            editor.putLong("Longitude",Long.valueOf(Longitude));
-            editor.apply();
-            editor.commit();
+                putlocation = getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
 
+                editor = putlocation.edit();
+
+                String Longitude = String.valueOf(l.getLongitude());
+                String Latitude = String.valueOf(l.getLatitude());
+
+                editor.putString("Latitude",Latitude);
+                editor.putString("Longitude",Longitude);
+                editor.apply();
+                editor.commit();
+
+            }
+        }catch (Exception e){
+            Toast.makeText(this, " "+e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.i("locatione",e.getMessage());
         }
+
+
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
 
-
+        getlocation();
 
     }
 
@@ -446,7 +462,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
+
         getlocation();
-        //retornoPosicao();
+
+
     }
 }

@@ -46,7 +46,6 @@ public class hospitalDetalheActivity extends AppCompatActivity {
 
 
     EditText email,telefone,descricao,site;
-    FloatingActionButton fbsendmail,fbopensite;
     String id;
     ProgressDialog dialog;
 
@@ -101,7 +100,7 @@ public class hospitalDetalheActivity extends AppCompatActivity {
 
 
         //enviar email
-        fbsendmail.setOnClickListener(new View.OnClickListener() {
+        email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendEmail(v);
@@ -109,7 +108,7 @@ public class hospitalDetalheActivity extends AppCompatActivity {
         });
 
         //abrir site
-            fbopensite.setOnClickListener(new View.OnClickListener() {
+        site.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
 
@@ -118,6 +117,12 @@ public class hospitalDetalheActivity extends AppCompatActivity {
                 }
             });
 
+        telefone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callNumber(view);
+            }
+        });
     }
 
     public void initViews(){
@@ -126,8 +131,6 @@ public class hospitalDetalheActivity extends AppCompatActivity {
         email = (EditText)findViewById(R.id.hospitalEmail);
         telefone = (EditText)findViewById(R.id.hospitalTelefone);
         site = (EditText)findViewById(R.id.hospitalSite);
-        fbsendmail = (FloatingActionButton)findViewById(R.id.fcsendMail);
-        fbopensite = (FloatingActionButton)findViewById(R.id.fopenSite);
         lstStatus = (ListView)findViewById(R.id.lststatushospital);
 
 

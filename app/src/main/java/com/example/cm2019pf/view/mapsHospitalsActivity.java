@@ -63,11 +63,11 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
         SharedPreferences getlocation = getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
 
 
-        Long longitude = getlocation.getLong("Longitude", 0);
-        Long latitude = getlocation.getLong("Latitude", 0);
+        String longitude = getlocation.getString("Longitude", "Longitude");
+        String latitude = getlocation.getString("Latitude", "Latitude");
 
 
-        LatLng sydney = new LatLng(Long.valueOf(longitude), Long.valueOf(latitude));
+        LatLng sydney = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
