@@ -3,15 +3,22 @@ package com.example.cm2019pf.view;
 import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.cm2019pf.MainActivity;
 import com.example.cm2019pf.R;
+import com.example.cm2019pf.controller.getdataApiController;
+import com.example.cm2019pf.helpers.IHospitalApi;
+import com.example.cm2019pf.model.Api.HospitalResult;
+import com.example.cm2019pf.model.Hospital;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
@@ -20,8 +27,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class mapsHospitalsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -30,6 +43,8 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
     SharedPreferences putlocation;
     SharedPreferences.Editor editor;
     LocationCallback locationCallback;
+    Marker markerhospital;
+    private ProgressDialog dialog;
 
 
     @Override
@@ -41,6 +56,7 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        get_data_from_server();
 
     }
 
@@ -70,49 +86,129 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
         LatLng sydney = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(21.0f));
+
     }
 
     private void initViews() {
 
+
+        //evento modificar
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                if (markerhospital != null) {
+                    //renova marcadores
+                    markerhospital.remove();
+                }
+
+                //customAdapter(new LatLng());
+            }
+        });
+
     }
 
-    private void retornoPosicao() {
+    public void customAdapter(LatLng latLng, String title, String snippet) {
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(mapsHospitalsActivity.this);
-
-
-        locationCallback = new LocationCallback() {
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng).title(title).snippet(snippet).draggable(true);
 
 
-            @SuppressLint("CommitPrefEdits")
+        markerhospital = mMap.addMarker(options);
+    }
+
+
+    public void get_data_from_server() {
+
+
+        dialog = new ProgressDialog(mapsHospitalsActivity.this);
+        dialog.setMessage("Carregando...");
+        dialog.setCancelable(false);
+        dialog.show();
+
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
-
-                for (final Location location : locationResult.getLocations()) {
+            protected Void doInBackground(Void... voids) {
 
 
-                    Log.i("Localizacao", " Latitude "
-                            + location.getLatitude() + " Longitude " + location.getLongitude());
+                IHospitalApi hospitalApi = getdataApiController.getRetrofitInstance().create(IHospitalApi.class);
+                Call<HospitalResult> requesthospitals = hospitalApi.listHospitais();
 
-                    putlocation = getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
+                requesthospitals.enqueue(new Callback<HospitalResult>() {
+                    @Override
+                    public void onResponse(Call<HospitalResult> call, Response<HospitalResult> response) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        if (!response.isSuccessful()) {
+                            Log.e("erro", "" + response.code());
+                        } else {
+                            //pega a lista de hospital vindo da url
+                            HospitalResult hospitals = response.body();
+                            try {
+                                for (Hospital h : hospitals.getResult()) {
+                                    Log.i("Hospital " + " Nome " + h.getName(), "Distro " + h.getDistrict());
 
-                    editor = putlocation.edit();
 
-                    String Longitude = String.valueOf(location.getLongitude());
-                    String Latitude = String.valueOf(location.getLatitude());
+                                    Hospital hospitaldatamodel = new Hospital(
 
-                    editor.putString("Latitude", Latitude);
-                    editor.putString("Longitude", Longitude);
-                    editor.apply();
-                    editor.commit();
+                                            h.getId(),
+                                            h.getName(),
+                                            h.getDescription(),
+                                            h.getLongitude(),
+                                            h.getLatitude(),
+                                            h.getAddress(),
+                                            h.getPhone(),
+                                            h.getEmail(),
+                                            h.getDistrict(),
+                                            h.getStandbyTimesUrl(),
+                                            h.getShareStandbyTimes(),
+                                            h.getHasCTH(),
+                                            h.getHasSIGLIC(),
+                                            h.getHasEmergency(),
+                                            h.getInstitutionURL(),
+                                            h.getPilot()
+
+                                    );
+                                    //adiciona hospitais no array
+
+                                    customAdapter(new LatLng(h.getLatitude(), h.getLongitude()), h.getName(), h.getDescription());
+
+                                }
 
 
-                }
+                            } catch (Exception ex) {
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<HospitalResult> call, Throwable t) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                            Toast.makeText(mapsHospitalsActivity.this, "Error ao carregar os dados", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    }
+                });
+
+
+                return null;
+
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
 
             }
         };
 
+        task.execute();
+
     }
 
 }
-
