@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Common.REQUEST_LOCATION);
             } else {
                 //    requisitarPosicao();
-                callConection();
+               // callConection();
             }
         } else {
             //        requisitarPosicao();
@@ -205,8 +205,8 @@ public class MainActivity extends AppCompatActivity
                     String Longitude = String.valueOf(location.getLongitude());
                     String Latitude = String.valueOf(location.getLatitude());
 
-                    editor.putString("Latitude",Latitude);
-                    editor.putString("Longitude",Longitude);
+                    editor.putLong("Latitude",Long.valueOf(Latitude));
+                    editor.putLong("Longitude",Long.valueOf(Longitude));
                     editor.apply();
                     editor.commit();
 
@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(3000);
         locationRequest.setSmallestDisplacement(10);
-        retornoPosicao();
     }
 
 
@@ -410,13 +409,27 @@ public class MainActivity extends AppCompatActivity
 
             Log.i("Localizacao", " Latitude "
                     + l.getLatitude() + " Longitude " + l.getLongitude());
+
+
+            putlocation = getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
+
+            editor = putlocation.edit();
+
+            String Longitude = String.valueOf(l.getLongitude());
+            String Latitude = String.valueOf(l.getLatitude());
+
+            editor.putLong("Latitude",Long.valueOf(Latitude));
+            editor.putLong("Longitude",Long.valueOf(Longitude));
+            editor.apply();
+            editor.commit();
+
         }
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
-        getlocation();
+
 
 
     }
@@ -434,5 +447,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
         getlocation();
+        //retornoPosicao();
     }
 }

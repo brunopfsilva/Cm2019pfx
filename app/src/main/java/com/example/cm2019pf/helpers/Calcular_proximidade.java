@@ -21,7 +21,7 @@ public class Calcular_proximidade {
         if (getlocation != null){
 
         //latitude inicial do dispositivo
-        LatLng posicaoInicial = new LatLng(getlocation.getFloat("Latitude",0),getlocation.getFloat("Longitude",0));
+        LatLng posicaoInicial = new LatLng(getlocation.getLong("Latitude",0),getlocation.getLong("Longitude",0));
         //LatLng posicaoInicial = new LatLng(latitudeIni,LongitudeIni);
         //latitude final  do hospital
         LatLng posicaiFinal = new LatLng(latitudeFin,longitudeFin);

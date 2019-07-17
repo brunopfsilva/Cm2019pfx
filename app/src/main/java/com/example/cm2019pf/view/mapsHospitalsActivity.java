@@ -23,15 +23,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class mapsHospitalsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+public class mapsHospitalsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    SharedPreferences getlocation ;
     FusedLocationProviderClient fusedLocationProviderClient;
-    SharedPreferences putlocation ;
+    SharedPreferences putlocation;
     SharedPreferences.Editor editor;
     LocationCallback locationCallback;
-
 
 
     @Override
@@ -42,6 +40,8 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
     }
 
 
@@ -60,19 +60,20 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
         initViews();
 
         // Add a marker in Sydney and move the camera
-
-        Long longitude = getlocation.getLong("Longitude",0);
-        Long latitude = getlocation.getLong("Latitude",0);
+        SharedPreferences getlocation = getSharedPreferences("tmplocation", Context.MODE_PRIVATE);
 
 
-        LatLng sydney = new LatLng(Long.valueOf(longitude),Long.valueOf(latitude));
+        Long longitude = getlocation.getLong("Longitude", 0);
+        Long latitude = getlocation.getLong("Latitude", 0);
+
+
+        LatLng sydney = new LatLng(Long.valueOf(longitude), Long.valueOf(latitude));
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    private void initViews (){
+    private void initViews() {
 
-        getlocation = getSharedPreferences("tmplocation",Context.MODE_PRIVATE);
     }
 
     private void retornoPosicao() {
@@ -100,8 +101,8 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
                     String Longitude = String.valueOf(location.getLongitude());
                     String Latitude = String.valueOf(location.getLatitude());
 
-                    editor.putString("Latitude",Latitude);
-                    editor.putString("Longitude",Longitude);
+                    editor.putString("Latitude", Latitude);
+                    editor.putString("Longitude", Longitude);
                     editor.apply();
                     editor.commit();
 
@@ -113,23 +114,5 @@ public class mapsHospitalsActivity extends FragmentActivity implements OnMapRead
 
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
 }
+
